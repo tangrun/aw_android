@@ -10,8 +10,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.telecom.VideoProfile;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -39,13 +41,6 @@ import java.util.List;
 import cn.wildfire.chat.kit.common.AppScopeViewModel;
 import cn.wildfire.chat.kit.net.OKHttpHelper;
 import cn.wildfire.chat.kit.third.utils.UIUtils;
-import cn.wildfire.chat.kit.voip.AsyncPlayer;
-import cn.wildfire.chat.kit.voip.MultiCallActivity;
-import cn.wildfire.chat.kit.voip.SingleCallActivity;
-import cn.wildfire.chat.kit.voip.VoipCallService;
-import cn.wildfire.chat.kit.voip.conference.message.ConferenceChangeModeContent;
-import cn.wildfirechat.avenginekit.AVEngineKit;
-import cn.wildfirechat.avenginekit.VideoProfile;
 import cn.wildfirechat.client.NotInitializedExecption;
 import cn.wildfirechat.message.Message;
 import cn.wildfirechat.message.PttInviteMessageContent;
@@ -60,7 +55,7 @@ import cn.wildfirechat.remote.OnRecallMessageListener;
 import cn.wildfirechat.remote.OnReceiveMessageListener;
 
 
-public class WfcUIKit implements AVEngineKit.AVEngineCallback, OnReceiveMessageListener, OnRecallMessageListener, OnDeleteMessageListener, OnFriendUpdateListener {
+public class WfcUIKit implements  OnReceiveMessageListener, OnRecallMessageListener, OnDeleteMessageListener, OnFriendUpdateListener {
 
     private boolean isBackground = true;
     private Application application;
@@ -95,11 +90,12 @@ public class WfcUIKit implements AVEngineKit.AVEngineCallback, OnReceiveMessageL
                 WfcNotificationManager.getInstance().clearAllNotification(application);
                 isBackground = false;
 
+                // TODO: 2021/10/28  
                 // 处理没有后台弹出界面权限
-                AVEngineKit.CallSession session = AVEngineKit.Instance().getCurrentSession();
-                if (session != null) {
-                    onReceiveCall(session);
-                }
+//                AVEngineKit.CallSession session = AVEngineKit.Instance().getCurrentSession();
+//                if (session != null) {
+//                    onReceiveCall(session);
+//                }
             }
 
             @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -145,14 +141,16 @@ public class WfcUIKit implements AVEngineKit.AVEngineCallback, OnReceiveMessageL
             //AVEngineKit.MAX_VIDEO_PARTICIPANT_COUNT = 9;
             // 多人版，最多支持9人；高级版，最多支持16人
             //AVEngineKit.MAX_AUDIO_PARTICIPANT_COUNT= 16;
-            AVEngineKit.init(application, this);
-            AVEngineKit.Instance().setVideoProfile(VideoProfile.VP360P, false);
-
-            ChatManager.Instance().registerMessageContent(ConferenceChangeModeContent.class);
-            ChatManagerHolder.gAVEngine = AVEngineKit.Instance();
-            for (String[] server : Config.ICE_SERVERS) {
-                ChatManagerHolder.gAVEngine.addIceServer(server[0], server[1], server[2]);
-            }
+            // TODO: 2021/10/28  
+//            AVEngineKit.init(application, this);
+//            AVEngineKit.Instance().setVideoProfile(VideoProfile.VP360P, false);
+//            
+//
+//            ChatManager.Instance().registerMessageContent(ConferenceChangeModeContent.class);
+//            ChatManagerHolder.gAVEngine = AVEngineKit.Instance();
+//            for (String[] server : Config.ICE_SERVERS) {
+//                ChatManagerHolder.gAVEngine.addIceServer(server[0], server[1], server[2]);
+//            }
         } catch (NotInitializedExecption notInitializedExecption) {
             notInitializedExecption.printStackTrace();
         }
@@ -202,97 +200,104 @@ public class WfcUIKit implements AVEngineKit.AVEngineCallback, OnReceiveMessageL
         }
         return viewModelProvider.get(modelClass);
     }
-
-    @Override
-    public void onReceiveCall(AVEngineKit.CallSession session) {
-        ChatManager.Instance().getMainHandler().postDelayed(() -> {
-            AVEngineKit.CallSession callSession = AVEngineKit.Instance().getCurrentSession();
-            if (callSession == null || callSession.getState() != AVEngineKit.CallState.Incoming) {
-                return;
-            }
-
-            List<String> participants = session.getParticipantIds();
-            if (participants == null || participants.isEmpty()) {
-                return;
-            }
-
-            boolean speakerOff = session.getConversation().type == Conversation.ConversationType.Single && session.isAudioOnly();
-            AudioManager audioManager = (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
-            audioManager.setMode(speakerOff ? AudioManager.MODE_IN_COMMUNICATION : AudioManager.MODE_NORMAL);
-            audioManager.setSpeakerphoneOn(!speakerOff);
-
-            Conversation conversation = session.getConversation();
-            if (conversation.type == Conversation.ConversationType.Single) {
-                Intent intent = new Intent(WfcIntent.ACTION_VOIP_SINGLE);
-                startActivity(application, intent);
-            } else {
-                Intent intent = new Intent(WfcIntent.ACTION_VOIP_MULTI);
-                startActivity(application, intent);
-            }
-            VoipCallService.start(application, false);
-        }, 200);
-    }
+    // TODO: 2021/10/28  
+//    @Override
+//    public void onReceiveCall(AVEngineKit.CallSession session) {
+//        ChatManager.Instance().getMainHandler().postDelayed(() -> {
+//            AVEngineKit.CallSession callSession = AVEngineKit.Instance().getCurrentSession();
+//            if (callSession == null || callSession.getState() != AVEngineKit.CallState.Incoming) {
+//                return;
+//            }
+//
+//            List<String> participants = session.getParticipantIds();
+//            if (participants == null || participants.isEmpty()) {
+//                return;
+//            }
+//
+//            boolean speakerOff = session.getConversation().type == Conversation.ConversationType.Single && session.isAudioOnly();
+//            AudioManager audioManager = (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
+//            audioManager.setMode(speakerOff ? AudioManager.MODE_IN_COMMUNICATION : AudioManager.MODE_NORMAL);
+//            audioManager.setSpeakerphoneOn(!speakerOff);
+//
+//            Conversation conversation = session.getConversation();
+//            if (conversation.type == Conversation.ConversationType.Single) {
+//                Intent intent = new Intent(WfcIntent.ACTION_VOIP_SINGLE);
+//                startActivity(application, intent);
+//            } else {
+//                Intent intent = new Intent(WfcIntent.ACTION_VOIP_MULTI);
+//                startActivity(application, intent);
+//            }
+//            
+//            VoipCallService.start(application, false);
+//        }, 200);
+//    }
 
     private AsyncPlayer ringPlayer;
-
-    @Override
-    public void shouldStartRing(boolean isIncoming) {
-        if (isIncoming && ChatManager.Instance().isVoipSilent()) {
-            Log.d("wfcUIKit", "用户设置禁止voip通知，忽略来电提醒");
-            return;
-        }
-        ChatManager.Instance().getMainHandler().postDelayed(() -> {
-            AVEngineKit.CallSession callSession = AVEngineKit.Instance().getCurrentSession();
-            if (callSession == null || (callSession.getState() != AVEngineKit.CallState.Incoming && callSession.getState() != AVEngineKit.CallState.Outgoing)) {
-                return;
-            }
-
-            if (isIncoming) {
-                Uri uri = Uri.parse("android.resource://" + application.getPackageName() + "/" + R.raw.incoming_call_ring);
-                ringPlayer.play(application, uri, true, AudioManager.STREAM_RING);
-            } else {
-                Uri uri = Uri.parse("android.resource://" + application.getPackageName() + "/" + R.raw.outgoing_call_ring);
-                ringPlayer.play(application, uri, true, AudioManager.STREAM_RING);
-            }
-        }, 200);
-    }
-
-    @Override
-    public void shouldSopRing() {
-        Log.d("wfcUIKit", "showStopRing");
-        ringPlayer.stop();
-    }
+    
+    // TODO: 2021/10/28  
+    
+//    @Override
+//    public void shouldStartRing(boolean isIncoming) {
+//        if (isIncoming && ChatManager.Instance().isVoipSilent()) {
+//            Log.d("wfcUIKit", "用户设置禁止voip通知，忽略来电提醒");
+//            return;
+//        }
+//        ChatManager.Instance().getMainHandler().postDelayed(() -> {
+//            AVEngineKit.CallSession callSession = AVEngineKit.Instance().getCurrentSession();
+//            if (callSession == null || (callSession.getState() != AVEngineKit.CallState.Incoming && callSession.getState() != AVEngineKit.CallState.Outgoing)) {
+//                return;
+//            }
+//
+//            if (isIncoming) {
+//                Uri uri = Uri.parse("android.resource://" + application.getPackageName() + "/" + R.raw.incoming_call_ring);
+//                ringPlayer.play(application, uri, true, AudioManager.STREAM_RING);
+//            } else {
+//                Uri uri = Uri.parse("android.resource://" + application.getPackageName() + "/" + R.raw.outgoing_call_ring);
+//                ringPlayer.play(application, uri, true, AudioManager.STREAM_RING);
+//            }
+//        }, 200);
+//    }
+//
+//    @Override
+//    public void shouldSopRing() {
+//        Log.d("wfcUIKit", "showStopRing");
+//        ringPlayer.stop();
+//    }
 
     // pls refer to https://stackoverflow.com/questions/11124119/android-starting-new-activity-from-application-class
     public static void singleCall(Context context, String targetId, boolean isAudioOnly) {
         Conversation conversation = new Conversation(Conversation.ConversationType.Single, targetId);
-        AVEngineKit.Instance().startCall(conversation, Collections.singletonList(targetId), isAudioOnly, null);
+        // TODO: 2021/10/28  
+        //AVEngineKit.Instance().startCall(conversation, Collections.singletonList(targetId), isAudioOnly, null);
 
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMode(isAudioOnly ? AudioManager.MODE_IN_COMMUNICATION : AudioManager.MODE_NORMAL);
         audioManager.setSpeakerphoneOn(!isAudioOnly);
 
-        Intent voip = new Intent(context, SingleCallActivity.class);
-        startActivity(context, voip);
-
-        VoipCallService.start(context, false);
+        // TODO: 2021/10/28  
+//        Intent voip = new Intent(context, SingleCallActivity.class);
+//        startActivity(context, voip);
+//
+//        VoipCallService.start(context, false);
     }
 
     public static void multiCall(Context context, String groupId, List<String> participants, boolean isAudioOnly) {
-        if (!AVEngineKit.isSupportMultiCall()) {
-            Log.e("WfcKit", "avenginekit not support multi call");
-            return;
-        }
+        // TODO: 2021/10/28  
+//        if (!AVEngineKit.isSupportMultiCall()) {
+//            Log.e("WfcKit", "avenginekit not support multi call");
+//            return;
+//        }
 
         Conversation conversation = new Conversation(Conversation.ConversationType.Group, groupId);
-        AVEngineKit.Instance().startCall(conversation, participants, isAudioOnly, null);
+//        AVEngineKit.Instance().startCall(conversation, participants, isAudioOnly, null);
 
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMode(AudioManager.MODE_NORMAL);
         audioManager.setSpeakerphoneOn(true);
 
-        Intent intent = new Intent(context, MultiCallActivity.class);
-        startActivity(context, intent);
+        // TODO: 2021/10/28  
+//        Intent intent = new Intent(context, MultiCallActivity.class);
+//        startActivity(context, intent);
     }
 
     public static void startActivity(Context context, Intent intent) {

@@ -23,14 +23,12 @@ import cn.wildfire.chat.kit.R2;
 import cn.wildfire.chat.kit.annotation.MessageContentType;
 import cn.wildfire.chat.kit.conversation.ConversationFragment;
 import cn.wildfire.chat.kit.conversation.message.model.UiMessage;
-import cn.wildfire.chat.kit.voip.conference.ConferenceActivity;
-import cn.wildfirechat.avenginekit.AVEngineKit;
 import cn.wildfirechat.message.ConferenceInviteMessageContent;
 import cn.wildfirechat.model.UserInfo;
 import cn.wildfirechat.remote.ChatManager;
 
 @MessageContentType(value = {
-    ConferenceInviteMessageContent.class,
+        ConferenceInviteMessageContent.class,
 })
 public class ConferenceInviteMessageContentViewHolder extends NormalMessageContentViewHolder {
     @BindView(R2.id.hostPortraitImageView)
@@ -53,21 +51,23 @@ public class ConferenceInviteMessageContentViewHolder extends NormalMessageConte
         descTextView.setText(inviteMessageContent.getDesc());
         UserInfo userInfo = ChatManager.Instance().getUserInfo(inviteMessageContent.getHost(), false);
         GlideApp
-            .with(fragment)
-            .load(userInfo.portrait)
-            .transforms(new CenterCrop(), new RoundedCorners(10))
-            .placeholder(R.mipmap.avatar_def)
-            .into(hostPortraitImageView);
+                .with(fragment)
+                .load(userInfo.portrait)
+                .transforms(new CenterCrop(), new RoundedCorners(10))
+                .placeholder(R.mipmap.avatar_def)
+                .into(hostPortraitImageView);
     }
 
     @OnClick(R2.id.contentLayout)
     void joinConference() {
-        if (!AVEngineKit.isSupportConference()) {
-            Toast.makeText(fragment.getActivity(), "本版本不支持会议功能", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        AVEngineKit.Instance().joinConference(inviteMessageContent.getCallId(), inviteMessageContent.isAudioOnly(), inviteMessageContent.getPin(), inviteMessageContent.getHost(), inviteMessageContent.getTitle(), inviteMessageContent.getDesc(), inviteMessageContent.isAudience(), inviteMessageContent.isAdvanced(), false, false, null);
-        Intent intent = new Intent(fragment.getActivity(), ConferenceActivity.class);
-        fragment.startActivity(intent);
+        // TODO: 2021/10/28
+        Toast.makeText(fragment.getActivity(), "本版本不支持会议功能", Toast.LENGTH_SHORT).show();
+//        if (true || !AVEngineKit.isSupportConference()) {
+//            Toast.makeText(fragment.getActivity(), "本版本不支持会议功能", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        AVEngineKit.Instance().joinConference(inviteMessageContent.getCallId(), inviteMessageContent.isAudioOnly(), inviteMessageContent.getPin(), inviteMessageContent.getHost(), inviteMessageContent.getTitle(), inviteMessageContent.getDesc(), inviteMessageContent.isAudience(), inviteMessageContent.isAdvanced(), false, false, null);
+//        Intent intent = new Intent(fragment.getActivity(), ConferenceActivity.class);
+//        fragment.startActivity(intent);
     }
 }

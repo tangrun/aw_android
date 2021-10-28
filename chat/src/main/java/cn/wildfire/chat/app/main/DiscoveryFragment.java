@@ -29,9 +29,7 @@ import cn.wildfire.chat.kit.channel.ChannelListActivity;
 import cn.wildfire.chat.kit.chatroom.ChatRoomListActivity;
 import cn.wildfire.chat.kit.conversation.ConversationActivity;
 import cn.wildfire.chat.kit.viewmodel.MessageViewModel;
-import cn.wildfire.chat.kit.voip.conference.CreateConferenceActivity;
 import cn.wildfire.chat.kit.widget.OptionItemView;
-import cn.wildfirechat.avenginekit.AVEngineKit;
 import cn.wildfirechat.chat.R;
 import cn.wildfirechat.message.Message;
 import cn.wildfirechat.message.core.MessageStatus;
@@ -50,9 +48,10 @@ public class DiscoveryFragment extends Fragment {
         View view = inflater.inflate(R.layout.main_fragment_discovery, container, false);
         ButterKnife.bind(this, view);
         initMoment();
-        if (!AVEngineKit.isSupportConference()) {
-            conferenceOptionItemView.setVisibility(View.GONE);
-        }
+        // TODO: 2021/10/28
+//        if (!AVEngineKit.isSupportConference()) {
+//            conferenceOptionItemView.setVisibility(View.GONE);
+//        }
         return view;
     }
 
@@ -112,8 +111,9 @@ public class DiscoveryFragment extends Fragment {
 
     @OnClick(R.id.conferenceOptionItemView)
     void conference() {
-        Intent intent = new Intent(getActivity(), CreateConferenceActivity.class);
-        startActivity(intent);
+        // TODO: 2021/10/28  
+//        Intent intent = new Intent(getActivity(), CreateConferenceActivity.class);
+//        startActivity(intent);
     }
 
 }

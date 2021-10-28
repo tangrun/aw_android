@@ -75,7 +75,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     // 如果不能从网络下载webrtc时，可以将下面一行注释了，并取消 api project(':webrtc') 前面的注释
-    implementation 'org.webrtc:google-webrtc:1.0.32006'
+//    implementation 'org.webrtc:google-webrtc:1.0.32006'
 //    api project(':webrtc')
     api 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -85,7 +85,7 @@ dependencies {
     api "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
     api project(':client')
-    api project(':avenginekit')
+    //api project(':avenginekit')
     implementation project(':emojilibrary')
     implementation project(':imagepicker')
 

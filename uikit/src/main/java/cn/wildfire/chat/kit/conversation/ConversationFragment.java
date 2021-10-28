@@ -65,7 +65,6 @@ import cn.wildfire.chat.kit.viewmodel.MessageViewModel;
 import cn.wildfire.chat.kit.viewmodel.SettingViewModel;
 import cn.wildfire.chat.kit.widget.InputAwareLayout;
 import cn.wildfire.chat.kit.widget.KeyboardAwareLinearLayout;
-import cn.wildfirechat.avenginekit.AVEngineKit;
 import cn.wildfirechat.message.Message;
 import cn.wildfirechat.message.MessageContent;
 import cn.wildfirechat.message.TypingMessageContent;
@@ -942,19 +941,21 @@ public class ConversationFragment extends Fragment implements
         Intent intent = new Intent(getActivity(), PickGroupMemberActivity.class);
         GroupInfo groupInfo = groupViewModel.getGroupInfo(conversation.target, false);
         intent.putExtra("groupInfo", groupInfo);
-        int maxCount = AVEngineKit.isSupportMultiCall() ? (isAudioOnly ? AVEngineKit.MAX_AUDIO_PARTICIPANT_COUNT - 1 : AVEngineKit.MAX_VIDEO_PARTICIPANT_COUNT - 1) : 1;
-        intent.putExtra("maxCount", maxCount);
+        // TODO: 2021/10/28
+        //int maxCount = AVEngineKit.isSupportMultiCall() ? (isAudioOnly ? AVEngineKit.MAX_AUDIO_PARTICIPANT_COUNT - 1 : AVEngineKit.MAX_VIDEO_PARTICIPANT_COUNT - 1) : 1;
+        //intent.putExtra("maxCount", maxCount);
         startActivityForResult(intent, isAudioOnly ? REQUEST_CODE_GROUP_AUDIO_CHAT : REQUEST_CODE_GROUP_VIDEO_CHAT);
     }
 
     private void onPickGroupMemberToVoipChat(Intent intent, boolean isAudioOnly) {
         List<String> memberIds = intent.getStringArrayListExtra(PickGroupMemberActivity.EXTRA_RESULT);
         if (memberIds != null && memberIds.size() > 0) {
-            if (AVEngineKit.isSupportMultiCall()) {
-                WfcUIKit.multiCall(getActivity(), conversation.target, memberIds, isAudioOnly);
-            } else {
-                WfcUIKit.singleCall(getActivity(), memberIds.get(0), isAudioOnly);
-            }
+            // TODO: 2021/10/28
+//            if (AVEngineKit.isSupportMultiCall()) {
+//                WfcUIKit.multiCall(getActivity(), conversation.target, memberIds, isAudioOnly);
+//            } else {
+//                WfcUIKit.singleCall(getActivity(), memberIds.get(0), isAudioOnly);
+//            }
         }
     }
 

@@ -15,7 +15,6 @@ import cn.wildfire.chat.kit.WfcUIKit;
 import cn.wildfire.chat.kit.annotation.ExtContextMenuItem;
 import cn.wildfire.chat.kit.conversation.ConversationFragment;
 import cn.wildfire.chat.kit.conversation.ext.core.ConversationExt;
-import cn.wildfirechat.avenginekit.AVEngineKit;
 import cn.wildfirechat.model.Conversation;
 import cn.wildfirechat.model.UserInfo;
 import cn.wildfirechat.remote.ChatManager;
@@ -84,10 +83,6 @@ public class VoipExt extends ConversationExt {
 
     @Override
     public boolean filter(Conversation conversation) {
-        if ((conversation.type == Conversation.ConversationType.Group && AVEngineKit.isSupportMultiCall())) {
-            return false;
-        }
-
         if (conversation.type == Conversation.ConversationType.Single) {
             UserInfo userInfo = ChatManager.Instance().getUserInfo(conversation.target, false);
             // robot
